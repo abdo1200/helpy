@@ -23,6 +23,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cloud_firestore:
+  shared_preferences:
+  after_layout:
+  email_validator:
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -32,6 +36,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  firebase_core:
+  firebase_auth:
+  carousel_slider:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -47,7 +54,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/img/
-    - assets/img/loginback.png
+    - assets/img/hospitals/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
