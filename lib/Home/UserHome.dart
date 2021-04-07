@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:helpy/Auth/Login.dart';
 import 'package:helpy/Hospital/ViewHospital.dart';
+import 'package:helpy/User/search_location.dart';
+import 'package:helpy/User/search_name.dart';
+import 'package:helpy/User/user_profile.dart';
 import 'package:helpy/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -21,7 +24,7 @@ class _UserHomeState extends State<UserHome> {
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
-          color: Colors.blue,
+          color: MainColor,
           child: Column(
             children: <Widget>[
               Container(
@@ -95,18 +98,10 @@ class _UserHomeState extends State<UserHome> {
                       children: <Widget>[
                         InkWell(
                           onTap: (){
-                            firestoreInstance.collection("users").add(
-                                {
-                                  "name" : "john",
-                                  "age" : 50,
-                                  "email" : "example@example.com",
-                                  "address" : {
-                                    "street" : "street 24",
-                                    "city" : "new york"
-                                  }
-                                }).then((value){
-                              print(value.id);
-                            });
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SearchLocation()));
                           },
                           child: Container(
                             width: 180,
@@ -134,10 +129,52 @@ class _UserHomeState extends State<UserHome> {
                             ),
                           ),
                         ),
-                        Container(
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SearchName()));
+                          },
+                          child: Container(
+                            width: 180,
+                            height: 100,
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  padding: EdgeInsets.only(top: 15),
+                                  child: Icon(Icons.search,color: MainColor,size: 40,),
+                                ),
+                                Container(
+                                    padding: EdgeInsets.only(left: 20,top: 5),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text("Search Hospital",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
+                                      ],
+                                    )
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserProfile()));
+                      },
+                      child: Container(
                           width: 180,
                           height: 100,
-                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          margin: EdgeInsets.only(top: 20),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.white,
@@ -146,45 +183,19 @@ class _UserHomeState extends State<UserHome> {
                             children: <Widget>[
                               Container(
                                 padding: EdgeInsets.only(top: 15),
-                                child: Icon(Icons.search,color: MainColor,size: 40,),
+                                child: Icon(Icons.person,color: MainColor,size: 40,),
                               ),
                               Container(
-                                  padding: EdgeInsets.only(left: 20,top: 5),
+                                  padding: EdgeInsets.only(left: 60,top: 5),
                                   child: Row(
                                     children: <Widget>[
-                                      Text("Search Hospital",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
+                                      Text("Profile",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
                                     ],
                                   )
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                    Container(
-                      width: 180,
-                      height: 100,
-                      margin: EdgeInsets.only(top: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(top: 15),
-                            child: Icon(Icons.person,color: MainColor,size: 40,),
-                          ),
-                          Container(
-                              padding: EdgeInsets.only(left: 60,top: 5),
-                              child: Row(
-                                children: <Widget>[
-                                  Text("Profile",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
-                                ],
-                              )
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                 ),
