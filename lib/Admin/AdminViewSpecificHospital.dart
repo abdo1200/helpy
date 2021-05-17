@@ -1,19 +1,26 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:helpy/Auth/Login.dart';
-import 'package:helpy/Home/UserHome.dart';
-import 'package:helpy/Reviews/ViewReviews.dart';
+import 'package:helpy/Hospital/ViewHospital.dart';
+import 'package:helpy/Reviews/AdminViewReview.dart';
+import 'package:helpy/Reviews/Reviews.dart';
 import 'package:helpy/main.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class ViewHospital extends StatefulWidget {
+class AdminViewSpecificHospital extends StatefulWidget {
   @override
-  _ViewHospitalState createState() => _ViewHospitalState();
+  _AdminViewSpecificHospitalState createState() => _AdminViewSpecificHospitalState();
 }
 
-class _ViewHospitalState extends State<ViewHospital> {
+class _AdminViewSpecificHospitalState extends State<AdminViewSpecificHospital> {
   FirebaseAuth instance = FirebaseAuth.instance;
+
+  final List<Reviews> Rev = [
+    Reviews(name: "Radwa" , Reviewws: "it's good hospital"),
+    Reviews(name: "Radwaa" , Reviewws: "it's good hospital"),
+    Reviews(name: "Radwaaa", Reviewws: "it's good hospital" ),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,10 +32,10 @@ class _ViewHospitalState extends State<ViewHospital> {
                 width: double.infinity,
                 height: 250,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/img/hospitals/cleopatra.jpg'),
-                    fit: BoxFit.cover
-                  )
+                    image: DecorationImage(
+                        image: AssetImage('assets/img/hospitals/cleopatra.jpg'),
+                        fit: BoxFit.cover
+                    )
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,17 +44,14 @@ class _ViewHospitalState extends State<ViewHospital> {
                     Container(
                       margin: EdgeInsets.only(top: 5,left: 5),
                       decoration: BoxDecoration(
-                        color:MainColor,
-                        borderRadius: BorderRadius.circular(60)
+                          color:MainColor,
+                          borderRadius: BorderRadius.circular(60)
                       ),
                       child: IconButton(
                         color: Colors.white,
                         icon: Icon(Icons.arrow_back),
                         onPressed: (){
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => UserHome()));
+                          Navigator.pop(context);
                         },
                       ),
                     ),
@@ -91,8 +95,8 @@ class _ViewHospitalState extends State<ViewHospital> {
                 margin: EdgeInsets.only(top: 10),
                 padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey,width: 1,style: BorderStyle.solid),
-                  borderRadius: BorderRadius.circular(20)
+                    border: Border.all(color: Colors.grey,width: 1,style: BorderStyle.solid),
+                    borderRadius: BorderRadius.circular(20)
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -173,8 +177,8 @@ class _ViewHospitalState extends State<ViewHospital> {
                 height: 200,
                 margin: EdgeInsets.only(top: 20),
                 decoration: BoxDecoration(
-                  color: MainColor,
-                  borderRadius: BorderRadius.circular(20)
+                    color: MainColor,
+                    borderRadius: BorderRadius.circular(20)
                 ),
                 child: CarouselSlider(
                     options: CarouselOptions(height: 200,),
@@ -193,20 +197,20 @@ class _ViewHospitalState extends State<ViewHospital> {
                                     borderRadius: BorderRadius.circular(30)
                                 ),
                                 child: Column(
-                                    children: <Widget>[
-                                      Container(
-                                        height: 150,
-                                        width: 320,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(30),
-                                          child: Image(
-                                            image: AssetImage(i['img']),
-                                            fit: BoxFit.cover,
-                                          ),
+                                  children: <Widget>[
+                                    Container(
+                                      height: 150,
+                                      width: 320,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(30),
+                                        child: Image(
+                                          image: AssetImage(i['img']),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
+                                ),
                               ),
 
                             ],
@@ -239,15 +243,15 @@ class _ViewHospitalState extends State<ViewHospital> {
                                     width: 300,
                                     padding: EdgeInsets.symmetric(vertical: 5),
                                     decoration: BoxDecoration(
-                                      color: MainColor,
-                                      borderRadius: BorderRadius.circular(20)
+                                        color: MainColor,
+                                        borderRadius: BorderRadius.circular(20)
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
                                         Container(
-                                          margin: EdgeInsets.only(left: 30,right: 20),
-                                          child: Icon(Icons.healing,size: 70,color: Colors.white,)
+                                            margin: EdgeInsets.only(left: 30,right: 20),
+                                            child: Icon(Icons.healing,size: 70,color: Colors.white,)
                                         ),
                                         Container(
                                           width: 3,
@@ -268,7 +272,7 @@ class _ViewHospitalState extends State<ViewHospital> {
                   ],
                 ),
               ),
-              //add review
+              //reviews
               Container(
                 child: Column(
                   children: <Widget>[
@@ -278,57 +282,100 @@ class _ViewHospitalState extends State<ViewHospital> {
                       color: MainColor,
                       margin: EdgeInsets.only(bottom: 30),
                     ),
-                    Text('Add Review',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                     Container(
-                      width: 350,
-                      margin: EdgeInsets.only(top: 20),
-                      child: TextField(
-                        // onChanged: (value) {
-                        //   setState(() {
-                        //     this._password = value;
-                        //   });
-                        // },
-                        maxLines: null,
-                        keyboardType: TextInputType.multiline,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            focusColor: Colors.blue,
-                            fillColor: Colors.red,
-                            hintText: 'Add Your Review',
+                        margin: EdgeInsets.only(top: 20),
+                        width: 350,
+                        decoration: BoxDecoration(
+                            color: MainColor,
+                            borderRadius: BorderRadius.circular(20)
                         ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 20),
-                      width: 350,
-                      decoration: BoxDecoration(
-                        color: MainColor,
-                        borderRadius: BorderRadius.circular(20)
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(top:10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Text("Reviews",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                RaisedButton(
-                                  color: Colors.white,
-                                  onPressed: (){
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ViewReviews()));
-                                  },
-                                  child: Text("View All",style: TextStyle(fontSize: 20,color: MainColor),),
-                                )
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                                margin: EdgeInsets.only(top:10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: <Widget>[
+                                        Text("Reviews",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                        RaisedButton(
+                                          color: Colors.white,
+                                          onPressed: (){
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => AdminViewReview()));
+                                          },
+                                          child: Text("View All",style: TextStyle(fontSize: 20,color: MainColor),),
+                                        )
 
-                              ],
-                            )
-                          ),
-                        ],
-                      )
+                                      ],
+                                    ),
+                                    ...Rev.map((e){
+                                      return Container(
+                                        margin: EdgeInsets.only(bottom: 5),
+                                        padding: EdgeInsets.symmetric(horizontal: 10),
+                                        child: Card(
+                                          elevation: 5,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                      width: 50.0,
+                                                      height: 50.0,
+                                                      margin: EdgeInsets.only(left:10),
+                                                      decoration: new BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          image: new DecorationImage(
+                                                            fit: BoxFit.fill,
+                                                            image: AssetImage('assets/img/hospitals/cleopatra.jpg',),
+                                                          )
+                                                      )
+                                                  ),
+                                                  Container(
+                                                    margin: EdgeInsets.only(left: 20),
+                                                    child : Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: <Widget>[
+                                                          Text(e.name, style: TextStyle(color:MainColor, fontSize: 17,fontWeight: FontWeight.bold),),
+                                                          Text(e.Reviewws, style: TextStyle(color:Colors.black, fontSize: 15),textAlign: TextAlign.left,),
+                                                          Row(
+                                                              children: <Widget>[
+                                                                Icon(Icons.star,color: MainColor,),
+                                                                Icon(Icons.star,color: MainColor,),
+                                                                Icon(Icons.star,color: MainColor,),
+                                                                Icon(Icons.star,color: MainColor,),
+                                                              ]
+                                                          ),
+
+                                                        ]
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Container(
+                                                child: IconButton(
+                                                  icon: Icon(Icons.delete_forever,color: Colors.red,size: 40,),
+                                                  onPressed: (){},
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
+
+                                    }).toList(),
+                                  ],
+                                )
+                            ),
+                          ],
+                        )
                     )
                   ],
                 ),
@@ -339,6 +386,7 @@ class _ViewHospitalState extends State<ViewHospital> {
     );
   }
 }
+
 final List _colors=[
   {'name' : 'Cleopatra Hospital',
     'img':'assets/img/hospitals/cleopatra.jpg',

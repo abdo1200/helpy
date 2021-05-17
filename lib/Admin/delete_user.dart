@@ -17,7 +17,7 @@ class _DeleteUserState extends State<DeleteUser> {
             Container(
               // background
               width: double.infinity,
-              padding: EdgeInsets.all(25.0),
+              padding: EdgeInsets.symmetric(vertical: 25),
               decoration: BoxDecoration(
                 color: Color.fromRGBO(28, 117, 201, 1),
                 borderRadius: BorderRadius.only(
@@ -27,10 +27,9 @@ class _DeleteUserState extends State<DeleteUser> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: EdgeInsets.only(right: 180),
                         child: FlatButton(
                             child: Icon(
                                 Icons.arrow_back,
@@ -63,7 +62,7 @@ class _DeleteUserState extends State<DeleteUser> {
                   Container(
                     margin: EdgeInsets.only(top: 40.0),
                     child: CircleAvatar(
-                      backgroundImage: AssetImage("images/asmaa.png"),
+                      backgroundImage: AssetImage("assets/img/hospitals/cleopatra.jpg"),
                       radius: 50.0,
                     ),
                   ), //user image
@@ -245,7 +244,7 @@ class _DeleteUserState extends State<DeleteUser> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
                 ),
-                color: Color.fromRGBO(28, 117, 201, 1),
+                color: Colors.red,
                 onPressed: () {
 
                 },

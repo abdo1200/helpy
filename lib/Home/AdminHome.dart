@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:helpy/Auth/Login.dart';
+import 'package:helpy/Hospital/AdminViewHospitals.dart';
 import 'package:helpy/Hospital/add_hospital.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:helpy/User/ViewUsers.dart';
 
 class AdminHome extends StatefulWidget {
   @override
@@ -64,7 +66,7 @@ class _AdminHomeState extends State<AdminHome> {
                 ButtonContainer(
                   buttonText: "View Hospitals",
                   buttonIcon: Icons.airline_seat_flat_angled,
-                  widgetName: null,
+                  widgetName: AdminViewHospitals(),
                 ),
                 SizedBox(
                   height: 45,
@@ -72,7 +74,7 @@ class _AdminHomeState extends State<AdminHome> {
                 ButtonContainer(
                   buttonText: "View Users",
                   buttonIcon: Icons.people,
-                  widgetName: null,
+                  widgetName: ViewUsers(),
                 ),
               ],
             ),

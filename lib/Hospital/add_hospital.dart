@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:helpy/Auth/Login.dart';
 import 'package:helpy/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddHospital extends StatefulWidget {
   AddHospital({Key key}) : super(key: key);
@@ -9,6 +11,7 @@ class AddHospital extends StatefulWidget {
 }
 
 class _AddHospitalState extends State<AddHospital> {
+  FirebaseAuth instance = FirebaseAuth.instance;
   var nameController,
       emailController,
       addressController,
@@ -18,59 +21,37 @@ class _AddHospitalState extends State<AddHospital> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: MainColor,
+        appBar: AppBar(
+          backgroundColor: MainColor,
+          title: Text('Add Hospital Form'),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                instance.signOut();
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => Login()));
+              },
+              icon: Icon(
+                Icons.exit_to_app,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          ],
+        ),
         body: Stack(
           children: [
             Container(
-              child: Row(
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(
-                      Icons.arrow_back,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Add Hospital Form',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.exit_to_app,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(20),
-              margin:
-                  EdgeInsets.only(top: 20),
+              padding: EdgeInsets.only(left: 20,right: 20),
               child: Form(
                 child: ListView(
                   children: <Widget>[
+                    //name
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(
-                          margin: EdgeInsets.only(left: 20),
+                          margin: EdgeInsets.only(left: 20,top: 20),
                           child: Text(
                             'Hospital name',
                             style: TextStyle(fontSize: 20, color: Colors.white),
@@ -94,6 +75,8 @@ class _AddHospitalState extends State<AddHospital> {
                         ),
                       ],
                     ),
+
+                    //email
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -122,6 +105,8 @@ class _AddHospitalState extends State<AddHospital> {
                         ),
                       ],
                     ),
+
+                    //address
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -150,6 +135,8 @@ class _AddHospitalState extends State<AddHospital> {
                         ),
                       ],
                     ),
+
+                    //phone
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -178,6 +165,8 @@ class _AddHospitalState extends State<AddHospital> {
                         ),
                       ],
                     ),
+
+                    //image
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -212,6 +201,8 @@ class _AddHospitalState extends State<AddHospital> {
                         )
                       ],
                     ),
+
+                    //services
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -240,6 +231,8 @@ class _AddHospitalState extends State<AddHospital> {
                         ),
                       ],
                     ),
+
+                    //submit btn
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       padding: EdgeInsets.only(
@@ -254,7 +247,7 @@ class _AddHospitalState extends State<AddHospital> {
                         child: Text(
                           "Submit",
                           style: TextStyle(
-                            fontSize: 25,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: MainColor
                           ),
