@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:helpy/Auth/Login.dart';
+import 'package:helpy/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -6,6 +9,7 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  FirebaseAuth instance = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +19,7 @@ class _EditProfileState extends State<EditProfile> {
             Container(
               // background
               width: double.infinity,
-              padding: EdgeInsets.all(25.0),
+              padding: EdgeInsets.symmetric(vertical:25.0),
               decoration: BoxDecoration(
                 color: Color.fromRGBO(28, 117, 201, 1),
                 borderRadius: BorderRadius.only(
@@ -25,38 +29,42 @@ class _EditProfileState extends State<EditProfile> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
                       Container(
-                        padding: EdgeInsets.only(right: 180),
-                        child: FlatButton(
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
-                            onPressed: () {}),
+                        margin: EdgeInsets.only(top: 5,left: 5),
+                        decoration: BoxDecoration(
+                            color:MainColor,
+                            borderRadius: BorderRadius.circular(60)
+                        ),
+                        child: IconButton(
+                          color: Colors.white,
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
+                        ),
                       ),
                       Container(
-                        alignment: AlignmentDirectional.topEnd,
-                        child: FlatButton(
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.exit_to_app,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
-                            onPressed: () {}),
+                        margin: EdgeInsets.only(top: 5,right: 5),
+                        decoration: BoxDecoration(
+                            color:MainColor,
+                            borderRadius: BorderRadius.circular(60)
+                        ),
+                        child: IconButton(
+                          color: Colors.white,
+                          icon: Icon(Icons.exit_to_app),
+                          onPressed: (){
+                            instance.signOut();
+                            Navigator.pushReplacement(
+                                context, MaterialPageRoute(builder: (context) => Login()));
+                          },
+                        ),
                       ),
+
                     ],
                   ),
-
                   Container(
                     margin: EdgeInsets.only(top: 40.0),
                     child: CircleAvatar(
@@ -66,7 +74,7 @@ class _EditProfileState extends State<EditProfile> {
                   ), //user image
                   Container(
                     margin: EdgeInsets.only(top: 20.0),
-                    child: Text("Asmaa Mahmoud",
+                    child: Text("Abdelrahman Sobhy",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 25,
@@ -98,7 +106,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 12.0),
-                    child: Text("asmaa329917@gmail.com",
+                    child: Text("abdosobhy1200@gmail.com",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -132,7 +140,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       Container(
                         padding: EdgeInsets.only(right: 10.0),
-                        child: Text("01140862754",
+                        child: Text("01017102408",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -153,7 +161,7 @@ class _EditProfileState extends State<EditProfile> {
                       Container(
                         child: IconButton(
                           icon: Icon(
-                            Icons.pregnant_woman,
+                            Icons.person,
                             color: Color.fromRGBO(28, 117, 201, 1),
                             size: 35,
                           ),
@@ -161,7 +169,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       Container(
                         padding: EdgeInsets.only(right: 25.0),
-                        child: Text("Female",
+                        child: Text("male",
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -195,7 +203,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 5.0),
-                    child: Text("Egypt, Cairo, ElSayeda Zeinab",
+                    child: Text("Egypt, Cairo, Nasr City",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -227,7 +235,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 10.0),
-                    child: Text("03/02/1999",
+                    child: Text("02/09/1999",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -262,19 +270,5 @@ class _EditProfileState extends State<EditProfile> {
         ),
       ),
     );
-    //TextField(
-    //                         style: TextStyle(fontSize: 18,
-    //                           fontWeight: FontWeight.bold,
-    //                           color: Colors.white,
-    //                         ),
-    //                       decoration: InputDecoration(
-    //                         focusedBorder: OutlineInputBorder(
-    //                           borderSide: BorderSide.none,
-    //                         ),
-    //                         enabledBorder: OutlineInputBorder(
-    //                           borderSide: BorderSide.none,
-    //                         ),
-    //                   ),
-    //                   ),
   }
 }

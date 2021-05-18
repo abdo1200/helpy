@@ -6,6 +6,7 @@ import 'package:helpy/Reviews/ViewReviews.dart';
 import 'package:helpy/main.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:helpy/Reviews/Reviews.dart';
 
 class ViewHospital extends StatefulWidget {
   @override
@@ -327,6 +328,59 @@ class _ViewHospitalState extends State<ViewHospital> {
                               ],
                             )
                           ),
+                          ...Rev.map((e){
+                            return Container(
+                              margin: EdgeInsets.only(bottom: 5),
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Card(
+                                elevation: 5,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Row(
+                                      children: [
+                                        Container(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            margin: EdgeInsets.only(left:10),
+                                            decoration: new BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: new DecorationImage(
+                                                  fit: BoxFit.fill,
+                                                  image: AssetImage('assets/img/hospitals/cleopatra.jpg',),
+                                                )
+                                            )
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(left: 20),
+                                          child : Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(e.name, style: TextStyle(color:MainColor, fontSize: 17,fontWeight: FontWeight.bold),),
+                                                Text(e.Reviewws, style: TextStyle(color:Colors.black, fontSize: 15),textAlign: TextAlign.left,),
+                                                Row(
+                                                    children: <Widget>[
+                                                      Icon(Icons.star,color: MainColor,),
+                                                      Icon(Icons.star,color: MainColor,),
+                                                      Icon(Icons.star,color: MainColor,),
+                                                      Icon(Icons.star,color: MainColor,),
+                                                    ]
+                                                ),
+
+                                              ]
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+
+                          }).toList(),
                         ],
                       )
                     )
@@ -356,4 +410,9 @@ final List _colors=[
     'img':'assets/img/hospitals/eygptions.jpg',
     'link':ViewHospital(),
   }
+];
+final List<Reviews> Rev = [
+  Reviews(name: "Radwa" , Reviewws: "it's good hospital"),
+  Reviews(name: "Radwaa" , Reviewws: "it's good hospital"),
+  Reviews(name: "Radwaaa", Reviewws: "it's good hospital" ),
 ];

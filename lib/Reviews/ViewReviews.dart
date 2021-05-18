@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:helpy/Auth/Login.dart';
+import 'package:helpy/main.dart';
 import 'Reviews.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 Color w = Colors.white;
 Color b = Colors.black;
 
 class ViewReviews extends StatelessWidget{
+  FirebaseAuth instance = FirebaseAuth.instance;
 
   final List<Reviews> Rev = [
   Reviews(name: "Radwa" , Reviewws: "Wow"),
@@ -15,83 +19,80 @@ class ViewReviews extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: MainColor,
       appBar: AppBar(
-        centerTitle: true,
-        title: Text('All Reviews', style: TextStyle(color: b, fontSize: 15,)),
-        leading: GestureDetector(
-          onTap: (){},
-          child: IconButton(
+        backgroundColor: MainColor,
+        title: Text('Reviews'),
+        actions: <Widget>[
+          IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              instance.signOut();
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => Login()));
             },
             icon: Icon(
-              Icons.arrow_back,
-              size: 20,
+              Icons.exit_to_app,
               color: Colors.white,
+              size: 20,
             ),
           ),
-        ),
-        actions: <Widget> [
-          Padding(padding: EdgeInsets.only(right: 15.0),
-            child: GestureDetector(
-              onTap: (){},
-              child: Icon(Icons.exit_to_app),
-            ) ,
-          )
         ],
       ),
 
       body: Container(
-        color: b,
+        margin: EdgeInsets.only(top: 10),
+        width: double.infinity,
         child: Column(
           children: <Widget>[
             ...Rev.map((e){
-              return Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-
-                child: Row(
-                  children: <Widget>[
-
-                    Container(
-                        width: 50.0,
-                        height: 50.0,
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: new DecorationImage(
-                              fit: BoxFit.fill,
-                              image: AssetImage('assets/img/hospitals/cleopatra.jpg',),
-                            )
-                        )
-                    ),
-                    Container(
-
-                   child : Column(
-                        children: <Widget>[
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(e.name, style: TextStyle(color:Colors.blueAccent, fontSize: 20),),
-                                Icon(Icons.star),
-                                Icon(Icons.star),
-                                Icon(Icons.star),
-                                Icon(Icons.star),
-                              ]
+              return Container(
+                margin: EdgeInsets.only(bottom: 5),
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Container(
+                              width: 50.0,
+                              height: 50.0,
+                              margin: EdgeInsets.only(left:10),
+                              decoration: new BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: new DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: AssetImage('assets/img/hospitals/cleopatra.jpg',),
+                                  )
+                              )
                           ),
+                          Container(
+                            margin: EdgeInsets.only(left: 20),
+                            child : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(e.name, style: TextStyle(color:MainColor, fontSize: 17,fontWeight: FontWeight.bold),),
+                                  Text(e.Reviewws, style: TextStyle(color:Colors.black, fontSize: 15),textAlign: TextAlign.left,),
+                                  Row(
+                                      children: <Widget>[
+                                        Icon(Icons.star,color: MainColor,),
+                                        Icon(Icons.star,color: MainColor,),
+                                        Icon(Icons.star,color: MainColor,),
+                                        Icon(Icons.star,color: MainColor,),
+                                      ]
+                                  ),
 
-                          Text(e.Reviewws, style: TextStyle(color:Colors.purpleAccent, fontSize: 20),textAlign: TextAlign.left,),
-                          SizedBox(
-                            height: 20,
+                                ]
+                            ),
                           ),
-
-                        ]
-                    ),
-                    ),
-
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
 

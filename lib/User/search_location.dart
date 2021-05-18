@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:helpy/Auth/Login.dart';
+import 'package:helpy/main.dart';
 import 'search_name.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SearchLocation extends StatefulWidget {
   @override
@@ -12,33 +15,27 @@ class _SearchLocationState extends State<SearchLocation> {
       return SearchName();
     }));
   }
-
+  FirebaseAuth instance = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // Rest of your Code
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        title: Text(
-          "Hospital location search",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-        ),
-        leading: new IconButton(
-          icon: new Icon(
-            Icons.arrow_back,
-            size: 30.0,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        backgroundColor: MainColor,
+        title: Text('Name Search'),
         actions: <Widget>[
-          new IconButton(
-              icon: new Icon(
-                Icons.exit_to_app,
-                size: 30.0,
-              ),
-              onPressed: () {}),
+          IconButton(
+            onPressed: () {
+              instance.signOut();
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => Login()));
+            },
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
         ],
       ),
       body: Container(
@@ -55,8 +52,7 @@ class _SearchLocationState extends State<SearchLocation> {
                     ),
                     hintText: "Hospital Location",
                     hintStyle: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
                       color: Colors.grey,
                     ),
                     fillColor: Colors.white,
@@ -67,10 +63,16 @@ class _SearchLocationState extends State<SearchLocation> {
                         width: 2.0,
                       ),
                     ),
-                    suffixIcon: Icon(
-                      Icons.search,
-                      color: Colors.blueAccent,
-                      size: 60.0,
+                    suffixIcon: Container(
+                      decoration: BoxDecoration(
+                          color: MainColor,
+                          borderRadius: BorderRadius.circular(50)
+                      ),
+                      child: Icon(
+                        Icons.search,
+                        color: Colors.white,
+                        size: 30.0,
+                      ),
                     ),
                   ),
                 ),
