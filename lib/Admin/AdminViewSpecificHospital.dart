@@ -177,42 +177,41 @@ class _AdminViewSpecificHospitalState extends State<AdminViewSpecificHospital> {
                 height: 200,
                 margin: EdgeInsets.only(top: 20),
                 decoration: BoxDecoration(
-                    color: MainColor,
-                    borderRadius: BorderRadius.circular(20)
-                ),
+                    color: MainColor, borderRadius: BorderRadius.circular(20)),
                 child: CarouselSlider(
-                    options: CarouselOptions(height: 200,),
-                    items: _colors.map((i){
-                      return Builder(builder: (BuildContext context){
+                    options: CarouselOptions(
+                      height: 200,
+                    ),
+                    items: _colors.map((i) {
+                      return Builder(builder: (BuildContext context) {
                         return Container(
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.only(top: 25),
-                          decoration: BoxDecoration(
-                          ),
+                          decoration: BoxDecoration(),
                           child: Column(
                             children: <Widget>[
                               Container(
                                 decoration: BoxDecoration(
                                     color: MainColor,
-                                    borderRadius: BorderRadius.circular(30)
-                                ),
+                                    borderRadius: BorderRadius.circular(30)),
                                 child: Column(
                                   children: <Widget>[
-                                    Container(
-                                      height: 150,
-                                      width: 320,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(30),
-                                        child: Image(
-                                          image: AssetImage(i['img']),
-                                          fit: BoxFit.cover,
+                                    FractionallySizedBox(
+                                      widthFactor: .92,
+                                      child: Container(
+                                        height: 150,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(30),
+                                          child: Image(
+                                            image: AssetImage(i['img']),
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-
                             ],
                           ),
                         );

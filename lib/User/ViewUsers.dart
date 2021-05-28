@@ -5,6 +5,8 @@ import 'package:helpy/Auth/Login.dart';
 import 'package:helpy/Reviews/Reviews.dart';
 import 'package:helpy/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:helpy/SizeConfig.dart';
 
 Color w = Colors.white;
 Color b = Colors.black;
@@ -14,13 +16,11 @@ class ViewUsers extends StatelessWidget {
 
   final List<Reviews> Rev = [
     Reviews(name: "Radwa", Reviewws: "Wow"),
-    Reviews(name: "Radwaa", Reviewws: "Woow"),
-    Reviews(name: "Radwaaa", Reviewws: "Wooow"),
-    Reviews(name: "Radwaaaaa", Reviewws: "Wooooow"),
   ];
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       backgroundColor: MainColor,
       appBar: AppBar(
@@ -44,64 +44,84 @@ class ViewUsers extends StatelessWidget {
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
         width: double.infinity,
-        child: Column(
-          children: <Widget>[
-            ...Rev.map((e) {
-              return Card(
-                elevation: 5,
-                margin: EdgeInsets.only(top: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('users').snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text('Something went wrong');
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("Loading");
+            }
+            if(snapshot.data.docs.isNotEmpty){
+              return new ListView(
+                children: snapshot.data.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data = document.data();
+                  return Card(
+                    elevation: 5,
+                    margin: EdgeInsets.only(top: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                                margin: EdgeInsets.only(left: 20,top: 10,bottom: 10,right: 20),
+                                width: 50.0,
+                                height: 50.0,
+                                decoration: new BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: new DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: AssetImage(
+                                        "assets/img/hospitals/cleopatra.jpg",
+                                      ),
+                                    ))),
+                            Text(
+                              '${data['name']}',
+                              style: TextStyle(
+                                  color: Colors.blueAccent, fontSize: 20,fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                         Container(
-                          margin: EdgeInsets.only(left: 20,top: 10,bottom: 10,right: 20),
-                            width: 50.0,
-                            height: 50.0,
-                            decoration: new BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: new DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: AssetImage(
-                                    "assets/img/hospitals/cleopatra.jpg",
-                                  ),
-                                ))),
-                        Text(
-                          e.name,
-                          style: TextStyle(
-                              color: Colors.blueAccent, fontSize: 20,fontWeight: FontWeight.bold),
+                          margin:EdgeInsets.only(right: 20),
+                          child: RaisedButton(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            color: MainColor,
+                            child: Text("View",style: TextStyle(fontSize: 17),),
+                            textColor: Colors.white,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DeleteUser()));
+                            },
+                            shape: new RoundedRectangleBorder(
+                                borderRadius:
+                                new BorderRadius.circular(30.0)),
+                          ),
                         ),
                       ],
                     ),
-                    Container(
-                      margin:EdgeInsets.only(right: 20),
-                      child: RaisedButton(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        color: MainColor,
-                        child: Text("View",style: TextStyle(fontSize: 17),),
-                        textColor: Colors.white,
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DeleteUser()));
-                        },
-                        shape: new RoundedRectangleBorder(
-                            borderRadius:
-                            new BorderRadius.circular(30.0)),
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+
+                }).toList(),
+              );}else{
+              return Container(
+                margin: EdgeInsets.only(top: 100),
+                child: Text("No Hospitals",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               );
-            }).toList(),
-          ],
+            }
+          },
         ),
       ),
     );
   }
 }
+
+

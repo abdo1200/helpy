@@ -67,34 +67,39 @@ class _UserHomeState extends State<UserHome> {
                         ],
                       ),
                     ),
-                    Container(
-                      width: 380,
-                      height: 100,
-                      margin: EdgeInsets.only(top: 10,bottom: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(left: 40,top: 15),
-                            child: Text("Your Location :",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(left: 35,top: 15),
-                            child: Row(
-                              children: <Widget>[
-                                Icon(Icons.location_on,color: MainColor,size: 30,),
-                                Text(" Nasr City",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
-                              ],
-                            )
-                          ),
-                        ],
+                    // user location
+                    FractionallySizedBox(
+                      widthFactor: .95,
+                      child: Container(
+                        height: 100,
+                        margin: EdgeInsets.only(top: 10,bottom: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(left: 40,top: 15),
+                              child: Text("Your Location :",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 35,top: 15),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.location_on,color: MainColor,size: 30,),
+                                  Text(" Nasr City",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
+                                ],
+                              )
+                            ),
+                          ],
+                        ),
                       ),
                     ),
+                    // search location and name
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         InkWell(
                           onTap: (){
@@ -104,7 +109,7 @@ class _UserHomeState extends State<UserHome> {
                                     builder: (context) => SearchLocation()));
                           },
                           child: Container(
-                            width: 180,
+                            width: 160,
                             height: 100,
                             margin: EdgeInsets.only(left: 20),
                             decoration: BoxDecoration(
@@ -121,7 +126,7 @@ class _UserHomeState extends State<UserHome> {
                                     padding: EdgeInsets.only(left: 15,top: 5),
                                     child: Row(
                                       children: <Widget>[
-                                        Text("Nearest Hospital",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
+                                        Text("Nearest Hospital",style: TextStyle(color: MainColor,fontSize: 18,fontWeight: FontWeight.bold),)
                                       ],
                                     )
                                 ),
@@ -137,7 +142,7 @@ class _UserHomeState extends State<UserHome> {
                                     builder: (context) => SearchName()));
                           },
                           child: Container(
-                            width: 180,
+                            width: 160,
                             height: 100,
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
@@ -154,7 +159,7 @@ class _UserHomeState extends State<UserHome> {
                                     padding: EdgeInsets.only(left: 20,top: 5),
                                     child: Row(
                                       children: <Widget>[
-                                        Text("Search Hospital",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
+                                        Text("Search Hospital",style: TextStyle(color: MainColor,fontSize: 18,fontWeight: FontWeight.bold),)
                                       ],
                                     )
                                 ),
@@ -172,7 +177,7 @@ class _UserHomeState extends State<UserHome> {
                                 builder: (context) => UserProfile()));
                       },
                       child: Container(
-                          width: 180,
+                          width: 160,
                           height: 100,
                           margin: EdgeInsets.only(top: 20),
                           decoration: BoxDecoration(
@@ -180,16 +185,17 @@ class _UserHomeState extends State<UserHome> {
                             color: Colors.white,
                           ),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Container(
                                 padding: EdgeInsets.only(top: 15),
                                 child: Icon(Icons.person,color: MainColor,size: 40,),
                               ),
                               Container(
-                                  padding: EdgeInsets.only(left: 60,top: 5),
+                                  padding: EdgeInsets.only(left: 55,top: 5),
                                   child: Row(
                                     children: <Widget>[
-                                      Text("Profile",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
+                                      Text("Profile",style: TextStyle(color: MainColor,fontSize: 18,fontWeight: FontWeight.bold),)
                                     ],
                                   )
                               ),
@@ -213,7 +219,7 @@ class _UserHomeState extends State<UserHome> {
                 child: Column(
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.only(top: 50,bottom: 20,left: 20),
+                      margin: EdgeInsets.only(top: 50,bottom: 30,left: 20),
                       child: Text('Top Hospitals',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                     ),
                     Container(
@@ -241,14 +247,16 @@ class _UserHomeState extends State<UserHome> {
                                         },
                                         child: Column(
                                           children: <Widget>[
-                                            Container(
-                                              height: 100,
-                                              width: 300,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(30),
-                                                child: Image(
-                                                  image: AssetImage(i['img']),
-                                                  fit: BoxFit.cover,
+                                            FractionallySizedBox(
+                                              widthFactor: .95,
+                                              child: Container(
+                                                height: 100,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(30),
+                                                  child: Image(
+                                                    image: AssetImage(i['img']),
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
                                               ),
                                             ),

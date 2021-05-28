@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:helpy/Auth/Login.dart';
 import 'package:helpy/Home/AdminHome.dart';
 import 'package:helpy/Home/UserHome.dart';
-import 'package:helpy/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:helpy/SizeConfig.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -25,6 +25,7 @@ class _HomeState extends State<Home> {
     });
   }
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     if(instance.currentUser.email=='admin@admin.com'){
       return AdminHome();
     }else{
