@@ -31,6 +31,7 @@ dependencies:
   firebase_storage:
   sizer:
   flutter_staggered_grid_view:
+  flutter_spinkit:
 
 
   # The following adds the Cupertino Icons font to your application.

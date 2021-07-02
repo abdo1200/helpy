@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:helpy/Auth/ChooseRole.dart';
 import 'package:helpy/Auth/register.dart';
 import 'package:helpy/Home/home.dart';
 import 'package:helpy/main.dart';
@@ -18,13 +20,23 @@ class _LoginState extends State<Login> {
   var loginkey = GlobalKey<ScaffoldState>();
   FirebaseAuth instance = FirebaseAuth.instance;
 
+  Future SendRule(String email) async{
+    await FirebaseFirestore.instance.collection('users').doc(email).get().then((value){
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Home(value['rule'])));
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          width: double.infinity,
           height: 700,
+          width: double.infinity,
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage('assets/img/loginback.png'),
@@ -79,10 +91,10 @@ class _LoginState extends State<Login> {
                       Text("Not registered , ",style: TextStyle(fontSize: 15),),
                       InkWell(
                         onTap: (){
-                          Navigator.pushReplacement(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Register()));
+                                  builder: (context) => ChooseRule()));
                         },
                         child: Text("Create an account",style:TextStyle(fontSize: 17,fontWeight: FontWeight.bold,color:Colors.blue[900])),
                       )
@@ -105,10 +117,7 @@ class _LoginState extends State<Login> {
                       }
                       try {
                         await instance.signInWithEmailAndPassword(email: _email, password: _password);
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Home()));
+                        SendRule(_email);
 
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {

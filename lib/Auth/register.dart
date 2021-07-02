@@ -1,14 +1,12 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:helpy/Home/UserHome.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:helpy/Home/home.dart';
 import 'package:email_validator/email_validator.dart';
-
 import '../main.dart';
 
 class Register extends StatefulWidget {
@@ -39,16 +37,6 @@ class _RegisterState extends State<Register> {
   }
   Future CreateUser(_email, _password,_name,String img) async{
     await instance.createUserWithEmailAndPassword(email: _email, password: _password);
-    Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
-    UploadTask uploadTask = storageReference.putFile(_userImageFile);
-    await uploadTask.whenComplete((){
-      print('File Uploaded');
-      storageReference.getDownloadURL().then((fileURL) {
-        setState(() {
-          imgurl = fileURL;
-        });
-      });
-    });
     firestoreInstance.collection("users").doc(_email).set(
         {
           "name":_name,
@@ -59,12 +47,15 @@ class _RegisterState extends State<Register> {
           "gender":_gender,
           "birthday":_birthday,
           'imageurl':img,
+          'rule':'member'
         }).then((value){
       print("success");
     });
   }
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Container(
@@ -263,7 +254,8 @@ class _RegisterState extends State<Register> {
                                     SizedBox(width: 10,),
                                     Text("Change Image",style: TextStyle(color: MainColor,fontSize: 15)),
                                   ],),
-                                ):Row(
+                                ):
+                                Row(
                                   children: [
                                     Icon(Icons.add_a_photo,color: MainColor,),
                                     SizedBox(width: 10,),
@@ -324,7 +316,8 @@ class _RegisterState extends State<Register> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Home()));
+
+                                      builder: (context) => UserHome('member')));
                             });
                           });
                         });

@@ -83,7 +83,7 @@ class _UserProfileState extends State<UserProfile> {
                       Container(
                         margin: EdgeInsets.only(top: 40.0),
                         child: CircleAvatar(
-                          backgroundImage: AssetImage("assets/img/me.jpeg"),
+                          backgroundImage: NetworkImage(snapshot.data.docs[0].data()['imageurl']),
                           radius: 50.0,
                         ),
                       ),

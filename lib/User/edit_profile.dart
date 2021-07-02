@@ -1,9 +1,13 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:helpy/Auth/Login.dart';
 import 'package:helpy/User/user_profile.dart';
 import 'package:helpy/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 
 class EditProfile extends StatefulWidget {
@@ -13,11 +17,20 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   FirebaseAuth instance = FirebaseAuth.instance;
-  String _email,_name,_phone,_birthday,_gender,_address;
+  String _email,_name,_phone,_birthday,_gender,_address,_imageurl;
+  File _userImageFile;
+  String imgurl;
   var areas = [
     "Nasr City",
     "Maadi",
   ];
+  Future getimage () async{
+    var image= await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _userImageFile=image;
+      print(_userImageFile);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +52,7 @@ class _EditProfileState extends State<EditProfile> {
             _email=snapshot.data.docs[0].data()['email'];
             _name=snapshot.data.docs[0].data()['name'];
             _birthday=snapshot.data.docs[0].data()['birthday'];
+            _imageurl=snapshot.data.docs[0].data()['imageurl'];
             return Column(
               children: [
                 Container(
@@ -95,8 +109,21 @@ class _EditProfileState extends State<EditProfile> {
                       Container(
                         margin: EdgeInsets.only(top: 40.0),
                         child: CircleAvatar(
-                          backgroundImage: AssetImage("assets/img/me.jpeg"),
+                          backgroundImage: (_userImageFile!=null)?FileImage(_userImageFile):NetworkImage(_imageurl),
                           radius: 50.0,
+                          child: Container(
+                            margin: EdgeInsets.only(top: 60,left:60),
+                            decoration: BoxDecoration(
+                              //color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)
+                            ),
+                            child: IconButton(
+                              icon: Icon(Icons.add_a_photo_rounded,color: Colors.white,size: 30,),
+                              onPressed: (){
+                                getimage();
+                              },
+                            ),
+                          ),
                         ),
                       ),
                       // name
@@ -236,25 +263,38 @@ class _EditProfileState extends State<EditProfile> {
                     height: 50,
                     margin: EdgeInsets.only(top: 25,bottom: 20),
                     child: RaisedButton(
-
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
                       color: Color.fromRGBO(28, 117, 201, 1),
                       onPressed: () async{
-                        await FirebaseFirestore.instance.collection('users').doc(instance.currentUser.email)
-                            .update({
-                          'name': _name,
-                          'address':_address,
-                          'email':_email,
-                          'birthday':_birthday,
-                          'gender':_gender,
-                          'phone':_phone
-                            })
-                            .then((value) => print("User Updated"))
-                            .catchError((error) => print("Failed to update user: $error"));
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => UserProfile()));
+                        Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
+                        UploadTask uploadTask = storageReference.putFile(_userImageFile);
+                        await uploadTask.whenComplete(()async{
+                          Reference storageReference = await FirebaseStorage.instance
+                              .refFromURL(_imageurl);
+                          storageReference.delete().then((value) => print("file deleted"));
+                          print('File Uploaded');
+                          storageReference.getDownloadURL().then((fileURL) {
+                            setState(() {
+                              imgurl = fileURL;
+                              FirebaseFirestore.instance.collection('users').doc(instance.currentUser.email)
+                                  .update({
+                                'name': _name,
+                                'address':_address,
+                                'email':_email,
+                                'birthday':_birthday,
+                                'gender':_gender,
+                                'phone':_phone,
+                                'imageurl':imgurl
+                              })
+                                  .then((value) => print("User Updated"))
+                                  .catchError((error) => print("Failed to update user: $error"));
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) => UserProfile()));
+                            });
+                          });
+                        });
                       },
                       child: Row(
                         children: [

@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:helpy/SizeConfig.dart';
 
 class Home extends StatefulWidget {
+  String email;
+  Home(this.email);
   @override
   _HomeState createState() => _HomeState();
 }
@@ -17,7 +19,7 @@ class _HomeState extends State<Home> {
     super.initState();
     instance.authStateChanges().listen((User) {
       if (User == null) {
-        Navigator.pushReplacement(
+        Navigator.push(
             context, MaterialPageRoute(builder: (context) => Login()));
       } else {
         print('have user');
@@ -25,12 +27,10 @@ class _HomeState extends State<Home> {
     });
   }
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
-    if(instance.currentUser.email=='admin@admin.com'){
+    if(widget.email=='admin@admin.com'){
       return AdminHome();
     }else{
-      return UserHome();
+      return UserHome(widget.email);
     }
-
   }
 }

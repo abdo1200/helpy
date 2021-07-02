@@ -159,7 +159,6 @@ class _SearchNameState extends State<SearchName> {
                               ),
                             ),
                           );
-
                         }).toList(),
                       );}else{
                       return Container(

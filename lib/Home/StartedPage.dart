@@ -64,7 +64,7 @@ class _StartedPageState extends State<StartedPage> {
                       onPressed: (){
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => UserHome()),
+                          MaterialPageRoute(builder: (context) => UserHome('null')),
                         );
                       },
                       textColor: Colors.white,

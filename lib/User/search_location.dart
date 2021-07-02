@@ -87,7 +87,6 @@ class _SearchLocationState extends State<SearchLocation> {
                     color: Colors.blueAccent),
               ),
               Container(
-                height: 400,
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance.collection('Hospitals').where('city',isEqualTo: dropdownValue)
                       .limit(3).orderBy('rate',descending: true).snapshots(),
@@ -100,7 +99,7 @@ class _SearchLocationState extends State<SearchLocation> {
                       return Text("Loading");
                     }
                     if(snapshot.data.docs.isNotEmpty){
-                      return new ListView(
+                      return new Column(
                         children: snapshot.data.docs.map((DocumentSnapshot document) {
                           Map<String, dynamic> data = document.data();
                           return Card(
