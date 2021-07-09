@@ -144,6 +144,8 @@ class _ArticalState extends State<Artical> {
                             'date':DateFormat('yyyy-MM-dd').format(DateTime.now()),
                             'hour':DateFormat('hh:mm').format(DateTime.now())
                           });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(backgroundColor: Colors.green,content: Text('Reservation is Added Successfully')));
                         }
                     ),
                   ),

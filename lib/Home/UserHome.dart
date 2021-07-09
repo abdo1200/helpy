@@ -17,7 +17,6 @@ class UserHome extends StatefulWidget {
 class _UserHomeState extends State<UserHome> {
   FirebaseAuth instance = FirebaseAuth.instance;
   String rule;
-
   final spinkit = SpinKitFadingCircle(
     itemBuilder: (BuildContext context, int index) {
       return DecoratedBox(
@@ -29,11 +28,7 @@ class _UserHomeState extends State<UserHome> {
   );
   @override
   Widget build(BuildContext context)  {
-    if(widget.rule=='member'){
-      return MemberHome();
-    }else{
-      return DoctorHome();
-    }
+    return Container();
   }
 }
 

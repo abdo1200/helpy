@@ -77,9 +77,7 @@ class ViewUsers extends StatelessWidget {
                                     shape: BoxShape.circle,
                                     image: new DecorationImage(
                                       fit: BoxFit.fill,
-                                      image: AssetImage(
-                                        "assets/img/hospitals/cleopatra.jpg",
-                                      ),
+                                      image: NetworkImage(data['imageurl']),
                                     ))),
                             Text(
                               '${data['name']}',
@@ -99,7 +97,7 @@ class ViewUsers extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => DeleteUser()));
+                                      builder: (context) => DeleteUser(document.id)));
                             },
                             shape: new RoundedRectangleBorder(
                                 borderRadius:

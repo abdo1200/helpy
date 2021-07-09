@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:helpy/Auth/Login.dart';
+import 'package:helpy/Home/MemberHome.dart';
 
 import '../main.dart';
 import 'doctor_profile.dart';
@@ -10,7 +12,7 @@ class Doctor extends StatefulWidget {
   _DoctorState createState() => _DoctorState();
 }
 
-String dropdownValue = 'Select Specialization';
+String dropdownValue = 'All Doctors';
 
 class _DoctorState extends State<Doctor> {
   String name = "null";
@@ -19,7 +21,7 @@ class _DoctorState extends State<Doctor> {
     return Scaffold(
       // Rest of your Code
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: MainColor,
         title: Text(
           "Doctors",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
@@ -34,12 +36,25 @@ class _DoctorState extends State<Doctor> {
           },
         ),
         actions: <Widget>[
-          new IconButton(
+          IconButton(
+              icon: new Icon(
+                Icons.home,
+                size: 30.0,
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => MemberHome()));
+              }),
+          IconButton(
               icon: new Icon(
                 Icons.logout,
                 size: 30.0,
               ),
-              onPressed: () {}),
+              onPressed: () {
+                instance.signOut();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => Login()));
+              }),
         ],
       ),
       body: Container(
@@ -131,14 +146,14 @@ class _DoctorState extends State<Doctor> {
                                               child: Row(
                                                 children: [
                                                   CircleAvatar(
-                                                    backgroundImage: NetworkImage("${document['img']}"),
+                                                    backgroundImage: NetworkImage("${document['imageurl']}"),
                                                     radius: 30.0,
                                                   ),
                                                   SizedBox(
                                                     width: 20,
                                                   ),
                                                   Text(
-                                                      "Dr ${document['Name']}",
+                                                      "Dr ${document['name']}",
                                                       style: TextStyle(
                                                         color: Colors
                                                             .blueAccent,
@@ -167,7 +182,7 @@ class _DoctorState extends State<Doctor> {
                                                         size: 25,
                                                       ),
                                                       Text(
-                                                        "${document['Email']}",
+                                                        "${document['email']}",
                                                         style: TextStyle(
                                                             color: Colors
                                                                 .black38,
@@ -187,7 +202,7 @@ class _DoctorState extends State<Doctor> {
                                                         size: 25,
                                                       ),
                                                       Text(
-                                                        "${document['Number']}",
+                                                        "${document['phone']}",
                                                         style: TextStyle(
                                                             color: Colors
                                                                 .black38,
@@ -231,7 +246,7 @@ class _DoctorState extends State<Doctor> {
                                                         size: 25,
                                                       ),
                                                       Text(
-                                                        "${document['Address']}",
+                                                        "${document['address']}",
                                                         style: TextStyle(
                                                             color: Colors
                                                                 .black38,
@@ -248,7 +263,7 @@ class _DoctorState extends State<Doctor> {
                                                   Row(
                                                     children: [
                                                       Icon(
-                                                        Icons.money,
+                                                        Icons.monetization_on_sharp,
                                                         color:
                                                         Colors.blueAccent,
                                                         size: 25,
@@ -313,12 +328,12 @@ class _DoctorState extends State<Doctor> {
                                                                   20),
                                                             ),
                                                             onPressed: () {
-                                                              Navigator.pushReplacement(
+                                                              Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
                                                                       builder:
                                                                           (context) =>
-                                                                          DoctorProfile('id')));
+                                                                          DoctorProfile(document.id)));
                                                             },
                                                           )),
                                                     ],
@@ -384,14 +399,14 @@ class _DoctorState extends State<Doctor> {
                                                   child: Row(
                                                     children: [
                                                       CircleAvatar(
-                                                        backgroundImage: NetworkImage("${document['img']}"),
+                                                        backgroundImage: NetworkImage("${document['imageurl']}"),
                                                         radius: 30.0,
                                                       ),
                                                       SizedBox(
                                                         width: 20,
                                                       ),
                                                       Text(
-                                                          "Dr ${document['Name']}",
+                                                          "Dr ${document['name']}",
                                                           style: TextStyle(
                                                             color: Colors
                                                                 .blueAccent,
@@ -422,7 +437,7 @@ class _DoctorState extends State<Doctor> {
                                                         size: 25,
                                                       ),
                                                       Text(
-                                                        "${document['Email']}",
+                                                        "${document['email']}",
                                                         style: TextStyle(
                                                             color: Colors
                                                                 .black38,
@@ -442,7 +457,7 @@ class _DoctorState extends State<Doctor> {
                                                         size: 25,
                                                       ),
                                                       Text(
-                                                        "${document['Number']}",
+                                                        "${document['phone']}",
                                                         style: TextStyle(
                                                             color: Colors
                                                                 .black38,
@@ -486,7 +501,7 @@ class _DoctorState extends State<Doctor> {
                                                         size: 25,
                                                       ),
                                                       Text(
-                                                        "${document['Address']}",
+                                                        "${document['address']}",
                                                         style: TextStyle(
                                                             color: Colors
                                                                 .black38,
@@ -524,104 +539,16 @@ class _DoctorState extends State<Doctor> {
                                                     height: 7,
                                                   ),
                                                   Container(
-                                                    child: (document[
-                                                    'rate'] ==
-                                                        1)
-                                                        ? Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      children: [
-                                                        Icon(Icons.star,
-                                                            color: Colors
-                                                                .amberAccent,
-                                                            size: 25.0),
-                                                      ],
-                                                    )
-                                                        : (document['rate'] ==
-                                                        2)
-                                                        ? Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      children: [
-                                                        Icon(
-                                                            Icons
-                                                                .star,
-                                                            color: Colors
-                                                                .amberAccent,
-                                                            size:
-                                                            25.0),
-                                                        Icon(
-                                                            Icons
-                                                                .star,
-                                                            color: Colors
-                                                                .amberAccent,
-                                                            size:
-                                                            25.0),
-                                                      ],
-                                                    )
-                                                        : (document['rate'] ==
-                                                        3)
-                                                        ? Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      children: [
-                                                        Icon(
-                                                            Icons
-                                                                .star,
-                                                            color:
-                                                            Colors.amberAccent,
-                                                            size: 25.0),
-                                                        Icon(
-                                                            Icons
-                                                                .star,
-                                                            color:
-                                                            Colors.amberAccent,
-                                                            size: 25.0),
-                                                        Icon(
-                                                            Icons
-                                                                .star,
-                                                            color:
-                                                            Colors.amberAccent,
-                                                            size: 25.0),
-                                                      ],
-                                                    )
-                                                        : (document['rate'] ==
-                                                        4)
-                                                        ? Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                      children: [
-                                                        Icon(Icons.star,
-                                                            color: Colors.amberAccent,
-                                                            size: 25.0),
-                                                        Icon(Icons.star,
-                                                            color: Colors.amberAccent,
-                                                            size: 25.0),
-                                                        Icon(Icons.star,
-                                                            color: Colors.amberAccent,
-                                                            size: 25.0),
-                                                        Icon(Icons.star,
-                                                            color: Colors.amberAccent,
-                                                            size: 25.0),
-                                                      ],
-                                                    )
-                                                        : (document['rate'] ==
-                                                        5)
-                                                        ? Row(
+                                                    child: Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
-                                                        Icon(Icons.star, color: Colors.amberAccent, size: 25.0),
-                                                        Icon(Icons.star, color: Colors.amberAccent, size: 25.0),
-                                                        Icon(Icons.star, color: Colors.amberAccent, size: 25.0),
-                                                        Icon(Icons.star, color: Colors.amberAccent, size: 25.0),
-                                                        Icon(Icons.star, color: Colors.amberAccent, size: 25.0),
+                                                        for(int i=0;i<document['rate'];i++)
+                                                        Icon(Icons.star,
+                                                            color: Colors
+                                                                .amberAccent,
+                                                            size: 25.0),
                                                       ],
-                                                    )
-                                                        : Text(
-                                                        "no rate available"),
+                                                    ),
                                                   ),
                                                   SizedBox(
                                                     height: 3,

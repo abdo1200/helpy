@@ -268,33 +268,23 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       color: Color.fromRGBO(28, 117, 201, 1),
                       onPressed: () async{
-                        Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
-                        UploadTask uploadTask = storageReference.putFile(_userImageFile);
-                        await uploadTask.whenComplete(()async{
-                          Reference storageReference = await FirebaseStorage.instance
-                              .refFromURL(_imageurl);
-                          storageReference.delete().then((value) => print("file deleted"));
-                          print('File Uploaded');
-                          storageReference.getDownloadURL().then((fileURL) {
-                            setState(() {
-                              imgurl = fileURL;
-                              FirebaseFirestore.instance.collection('users').doc(instance.currentUser.email)
-                                  .update({
-                                'name': _name,
-                                'address':_address,
-                                'email':_email,
-                                'birthday':_birthday,
-                                'gender':_gender,
-                                'phone':_phone,
-                                'imageurl':imgurl
-                              })
-                                  .then((value) => print("User Updated"))
-                                  .catchError((error) => print("Failed to update user: $error"));
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => UserProfile()));
-                            });
-                          });
-                        });
+
+                        FirebaseFirestore.instance.collection('users').doc(instance.currentUser.email)
+                            .update({
+                          'name': _name,
+                          'address':_address,
+                          'email':_email,
+                          'birthday':_birthday,
+                          'gender':_gender,
+                          'phone':_phone,
+
+                        }).then((value) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(backgroundColor: Colors.green,content: Text('user is edited Successfully')));
+                        })
+                            .catchError((error) => print("Failed to update user: $error"));
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => UserProfile()));
                       },
                       child: Row(
                         children: [

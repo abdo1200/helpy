@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:helpy/Articals/Artical.dart';
 import 'package:helpy/Auth/Login.dart';
+import 'package:helpy/Doctor/chatRoom.dart';
 import 'package:helpy/Doctor/doctor.dart';
 import 'package:helpy/Hospital/ViewHospital.dart';
 import 'package:helpy/User/search_location.dart';
@@ -12,6 +13,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../main.dart';
 
 class MemberHome extends StatefulWidget {
+
   @override
   _MebmerHomeState createState() => _MebmerHomeState();
 }
@@ -20,9 +22,12 @@ class _MebmerHomeState extends State<MemberHome>{
   FirebaseAuth instance = FirebaseAuth.instance;
   final firestoreInstance = FirebaseFirestore.instance;
   List colors=[];
+  String img;
+
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         body: SingleChildScrollView(
           child: Container(
@@ -30,80 +35,61 @@ class _MebmerHomeState extends State<MemberHome>{
             color: MainColor,
             child: Column(
               children: <Widget>[
-
                 Container(
                   alignment: Alignment.bottomCenter,
                   height: 430,
                   width: 412,
                   child: Column(
                     children: <Widget>[
-                      // navbar
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text("HELPY",style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),),
-                            Container(
-                              child: Row(
-                                children: <Widget>[
-                                  Container(
-                                    width: 50,
-                                    height: 50,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Image(
-                                        image: AssetImage('assets/img/me.jpeg'),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.exit_to_app),
-                                    color: Colors.white,
-                                    onPressed: (){
-                                      instance.signOut();
-                                      Navigator.pushReplacement(
-                                          context, MaterialPageRoute(builder: (context) => Login()));
-                                    },)
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
 
-                      // user location
-                      FractionallySizedBox(
-                        widthFactor: .95,
-                        child: Container(
-                          height: 100,
-                          margin: EdgeInsets.only(top: 10,bottom: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Colors.white,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
+                      StreamBuilder(
+                        stream: FirebaseFirestore.instance.collection('users').doc(instance.currentUser.email).snapshots(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) return const Text('loading');
+                          return Column(
+                            children: [
+                              // navbar
                               Container(
-                                padding: EdgeInsets.only(left: 40,top: 15),
-                                child: Text("Your Location :",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),),
-                              ),
-                              Container(
-                                  padding: EdgeInsets.only(left: 35,top: 15),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Icon(Icons.location_on,color: MainColor,size: 30,),
-                                      Text(" Nasr City",style: TextStyle(color: MainColor,fontSize: 20,fontWeight: FontWeight.bold),)
-                                    ],
-                                  )
+                                padding: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text("HELPY",style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.bold),),
+                                    Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Container(
+                                            width: 50,
+                                            height: 50,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(50),
+                                              child: Image(
+                                                image: NetworkImage(snapshot.data['imageurl']),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: Icon(Icons.exit_to_app),
+                                            color: Colors.white,
+                                            onPressed: (){
+                                              instance.signOut();
+                                              Navigator.pushReplacement(
+                                                  context, MaterialPageRoute(builder: (context) => Login()));
+                                            },)
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ],
-                          ),
-                        ),
+                          );
+                        },
                       ),
-
+                      SizedBox(
+                        height: 20,
+                      ),
                       // search location and name
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -253,6 +239,42 @@ class _MebmerHomeState extends State<MemberHome>{
                           ),
                         ],
                       ),
+
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChatRoom()));
+                        },
+                        child: Container(
+                          width: 160,
+                          height: 100,
+                          margin: EdgeInsets.only(top: 20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.only(top: 15),
+                                child: Icon(Icons.message,color: MainColor,size: 40,),
+                              ),
+                              Container(
+                                  padding: EdgeInsets.only(top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text("Chat",style: TextStyle(color: MainColor,fontSize: 18,fontWeight: FontWeight.bold),)
+                                    ],
+                                  )
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -311,7 +333,7 @@ class _MebmerHomeState extends State<MemberHome>{
                                               ),
                                               child: InkWell(
                                                 onTap: (){
-                                                  Navigator.pushReplacement(
+                                                  Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) => ViewHospital(i['id'])));

@@ -19,7 +19,7 @@ class _AddArticleState extends State<AddArticle> {
   File _userImageFile;
   String imgurl;
   String content,title,date;
-
+  final _formKey = GlobalKey<FormState>();
   Future getimage () async{
     var image= await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
@@ -68,6 +68,7 @@ class _AddArticleState extends State<AddArticle> {
             Container(
               padding: EdgeInsets.only(left: 20,right: 20),
               child: Form(
+                key: _formKey,
                 child: ListView(
                   children: <Widget>[
                     //name
@@ -88,6 +89,12 @@ class _AddArticleState extends State<AddArticle> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(
                               focusedBorder: InputBorder.none,
                               enabledBorder: InputBorder.none,
@@ -169,7 +176,12 @@ class _AddArticleState extends State<AddArticle> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
-                            maxLines: null,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },                            maxLines: null,
                             keyboardType: TextInputType.multiline,
                             decoration: InputDecoration(
                               focusedBorder: InputBorder.none,
@@ -206,23 +218,37 @@ class _AddArticleState extends State<AddArticle> {
                           ),
                         ),
                         onPressed: () async{
-                          Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
-                          UploadTask uploadTask = storageReference.putFile(_userImageFile);
-                          await uploadTask.whenComplete((){
-                            print('File Uploaded');
-                            storageReference.getDownloadURL().then((fileURL) {
-                              setState(() {
-                                imgurl = fileURL;
-                                FirebaseFirestore.instance
-                                    .collection('Articles').add({
-                                  'Title': title,
-                                  'Content': content,
-                                  'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                                  'image': imgurl,
-                                });
+                          if (title == null || content == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(
+                                        '*Required Field',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0))));
+                          }else{
+                            Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
+                            UploadTask uploadTask = storageReference.putFile(_userImageFile);
+                            await uploadTask.whenComplete((){
+                              print('File Uploaded');
+                              storageReference.getDownloadURL().then((fileURL) {
+                                setState(() {
+                                  imgurl = fileURL;
+                                  FirebaseFirestore.instance
+                                      .collection('Articles').add({
+                                    'Title': title,
+                                    'Content': content,
+                                    'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                    'image': imgurl,
+                                  });
+                                }
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(backgroundColor: Colors.green,content: Text('Article is Added Successfully')));
                               });
                             });
-                          });
+                          }
 
                         },
                       ),

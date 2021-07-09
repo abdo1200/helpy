@@ -53,8 +53,7 @@ class _AdminViewSpecificHospitalState extends State<AdminViewSpecificHospital> {
                           color: Colors.white,
                           icon: Icon(Icons.arrow_back),
                           onPressed: () {
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) => UserHome(instance.currentUser.email)));
+                            Navigator.pop(context);
                           },
                         ),
                       ),

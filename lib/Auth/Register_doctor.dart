@@ -19,11 +19,12 @@ class AddDoctor extends StatefulWidget {
 
 class _AddDoctorState extends State<AddDoctor> {
 
-  String Name = "null",
-      Email = "null",
-      Number = "null",
-      Address = "null",
-      Specialization = "null", Fees = 'null',Password=null;
+  String Name ,
+      Email ,
+      Number,
+      Address,
+      Specialization , Fees ,Password;
+  final _formKey = GlobalKey<FormState>();
   String dropdownValue = 'Select Specialization';
   File _userImageFile;
   String imgurl;
@@ -44,15 +45,16 @@ class _AddDoctorState extends State<AddDoctor> {
     await instance.createUserWithEmailAndPassword(email: Email, password: Password);
     return documents.doc(Email)
         .set({
-          'Name': Name,
-          'Email': Email,
+          'name': Name,
+          'email': Email,
           'password': Password,
           'rule':'doctor',
-          'Number': Number,
-          'img': img,
-          'Address': Address,
+          'phone': Number,
+          'imageurl': img,
+          'address': Address,
           'Specialization': Specialization,
           'Fees': Fees,
+          'rate':3
 
         })
         .then((value) => print("Doctor Added Successfully"))
@@ -76,6 +78,7 @@ class _AddDoctorState extends State<AddDoctor> {
                   border: Border.all(color: MainColor,style: BorderStyle.solid,width: 2)
               ),
               child: Form(
+                key: _formKey,
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -95,6 +98,12 @@ class _AddDoctorState extends State<AddDoctor> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },
                             onChanged: (value) {
                               Name = value;
                             },
@@ -121,6 +130,12 @@ class _AddDoctorState extends State<AddDoctor> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },
                             onChanged: (value) {
                               Email = value;
                             },
@@ -140,6 +155,12 @@ class _AddDoctorState extends State<AddDoctor> {
                       margin: EdgeInsets.only(top: 10,bottom: 10),
                       padding: EdgeInsets.only(left: 10,right: 10),
                       child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '*Required Field';
+                          }
+                          return null;
+                        },
                         onChanged: (value) {
                           setState(() {
                             this.Password=value;
@@ -147,15 +168,6 @@ class _AddDoctorState extends State<AddDoctor> {
                         },
                         keyboardType: TextInputType.text ,
                         obscureText: true,
-                        validator: (password){
-                          Pattern pattern =
-                              r'^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$';
-                          RegExp regex = new RegExp(pattern);
-                          if (!regex.hasMatch(password))
-                            return 'Invalid password';
-                          else
-                            return null;
-                        },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           focusColor: Colors.blue,
@@ -177,6 +189,12 @@ class _AddDoctorState extends State<AddDoctor> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },
                             onChanged: (value) {
                               Address = value;
                             },
@@ -202,6 +220,12 @@ class _AddDoctorState extends State<AddDoctor> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },
                             onChanged: (value) {
                               Number = value;
                             },
@@ -272,6 +296,12 @@ class _AddDoctorState extends State<AddDoctor> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },
                             onChanged: (value) {
                               Fees = value;
                             },
@@ -357,22 +387,35 @@ class _AddDoctorState extends State<AddDoctor> {
                               color: Colors.white),
                         ),
                         onPressed: () async {
-                          Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
-                          UploadTask uploadTask = storageReference.putFile(_userImageFile);
-                          await uploadTask.whenComplete((){
-                            print('File Uploaded');
-                            storageReference.getDownloadURL().then((fileURL) {
-                              setState(() {
-                                imgurl = fileURL;
-                                addDoctor(Email,Password,imgurl);
-                                instance.signInWithEmailAndPassword(email: Email, password: Password);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => UserHome('doctor')));
+                          if (Name == null || Email == null|| Number ==null|| Address == null|| Specialization ==null||
+                              Fees ==null || Password==null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(
+                                        '*Required Field',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0))));
+                          }else{
+                            Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
+                            UploadTask uploadTask = storageReference.putFile(_userImageFile);
+                            await uploadTask.whenComplete((){
+                              print('File Uploaded');
+                              storageReference.getDownloadURL().then((fileURL) {
+                                setState(() {
+                                  imgurl = fileURL;
+                                  addDoctor(Email,Password,imgurl);
+                                  instance.signInWithEmailAndPassword(email: Email, password: Password);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => UserHome('doctor')));
+                                });
                               });
                             });
-                          });
+                          }
+
                         },
                       ),
                     ),

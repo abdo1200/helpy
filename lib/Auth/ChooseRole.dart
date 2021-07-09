@@ -10,6 +10,7 @@ class ChooseRule extends StatefulWidget {
 }
 
 class _ChooseRuleState extends State<ChooseRule> {
+  final _formKey = GlobalKey<FormState>();
 String choosen;
   var Rule = [
     "member",
@@ -29,6 +30,7 @@ String choosen;
                 border: Border.all(color: MainColor,style: BorderStyle.solid,width: 2)
             ),
             child: Form(
+              key: _formKey,
               child: Column(
                 children: <Widget>[
                   Container(
@@ -54,6 +56,12 @@ String choosen;
                             )
                         );
                       }).toList(),
+                      validator: (value) {
+                        if (choosen == null) {
+                          return '*Please Choose Role';
+                        }
+                        return null;
+                      },
                       onChanged: (newValue) {
                         // do other stuff with _category
                         setState(() => choosen = newValue);
@@ -82,11 +90,21 @@ String choosen;
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AddDoctor()));
-                        }else{
+                        }else if(choosen == 'member'){
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => Register()));
+                        }
+                        else if (_formKey.currentState.validate()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                      '*Required Field',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.0))));
                         }
                       },
                       child: Text("Next",style: TextStyle(color: Colors.white,fontSize: 18),),

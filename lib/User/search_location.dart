@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpy/Auth/Login.dart';
+import 'package:helpy/Hospital/ViewHospital.dart';
 import 'package:helpy/main.dart';
 import 'search_name.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -69,7 +70,7 @@ class _SearchLocationState extends State<SearchLocation> {
                       dropdownValue = newValue;
                     });
                   },
-                  items: <String>['Select Area', 'Nasr city', 'Maadi']
+                  items: <String>['Select Area', '6 October', 'cairo']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -88,8 +89,8 @@ class _SearchLocationState extends State<SearchLocation> {
               ),
               Container(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('Hospitals').where('city',isEqualTo: dropdownValue)
-                      .limit(3).orderBy('rate',descending: true).snapshots(),
+                  stream: FirebaseFirestore.instance.collection('Hospitals').where('address',isEqualTo: dropdownValue)
+                      .limit(3).orderBy('Rate',descending: true).snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
                       return Text('Something went wrong');
@@ -109,7 +110,10 @@ class _SearchLocationState extends State<SearchLocation> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => ViewHospital(document.id)));
+                              },
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -117,7 +121,7 @@ class _SearchLocationState extends State<SearchLocation> {
                                     alignment: Alignment.bottomLeft,
                                     children: [
                                       Ink.image(
-                                        image: AssetImage("assets/img/hospitals/75375.jpg"),
+                                        image: NetworkImage(data['imageurl']),
                                         height: 150,
                                         fit: BoxFit.fitWidth,
                                       ),
@@ -125,21 +129,23 @@ class _SearchLocationState extends State<SearchLocation> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 50, top: 15, right: 50, bottom: 30),
+                                         top: 15, bottom: 30),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
                                           '${data['name']}',
+                                          textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Colors.blueAccent,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 23),
+                                              fontSize: 18,
+                                          ),
                                         ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            for(int i=0;i<data['rate'];i++)
+                                            for(int i=0;i<data['Rate'];i++)
                                               Icon(Icons.star,
                                                   color: Colors.blueAccent, size: 25.0),
 

@@ -24,6 +24,8 @@ class _AddHospitalState extends State<AddHospital> {
       addressController,
       numberController,
       servicesController;
+
+  final _formKey = GlobalKey<FormState>();
   @override
 
   Future getimage () async{
@@ -69,7 +71,6 @@ class _AddHospitalState extends State<AddHospital> {
   add(){
     listDynamic.add(new TextFieldDynamic());
     setState(() {
-
     });
   }
   Widget build(BuildContext context) {
@@ -98,6 +99,7 @@ class _AddHospitalState extends State<AddHospital> {
             Container(
               padding: EdgeInsets.only(left: 20,right: 20),
               child: Form(
+                key: _formKey,
                 child: ListView(
                   children: <Widget>[
                     //name
@@ -118,6 +120,12 @@ class _AddHospitalState extends State<AddHospital> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(
                               focusedBorder: InputBorder.none,
                               enabledBorder: InputBorder.none,
@@ -150,6 +158,12 @@ class _AddHospitalState extends State<AddHospital> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(
                               focusedBorder: InputBorder.none,
                               enabledBorder: InputBorder.none,
@@ -163,7 +177,6 @@ class _AddHospitalState extends State<AddHospital> {
                         ),
                       ],
                     ),
-
                     //address
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +208,6 @@ class _AddHospitalState extends State<AddHospital> {
                         ),
                       ],
                     ),
-
                     //phone
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,6 +226,12 @@ class _AddHospitalState extends State<AddHospital> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return '*Required Field';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(
                               focusedBorder: InputBorder.none,
                               enabledBorder: InputBorder.none,
@@ -332,17 +350,31 @@ class _AddHospitalState extends State<AddHospital> {
                           ),
                         ),
                         onPressed: () async{
-                          Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
-                          UploadTask uploadTask = storageReference.putFile(_userImageFile);
-                          await uploadTask.whenComplete((){
-                            print('File Uploaded');
-                            storageReference.getDownloadURL().then((fileURL) {
-                              setState(() {
-                                imgurl = fileURL;
-                                Add_Hospital(imgurl);
+                          if (nameController == null || emailController == null || addressController == null || numberController == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(
+                                        '*Required Field',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0))));
+                          }else{
+                            Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
+                            UploadTask uploadTask = storageReference.putFile(_userImageFile);
+                            await uploadTask.whenComplete((){
+                              print('File Uploaded');
+                              storageReference.getDownloadURL().then((fileURL) {
+                                setState(() {
+                                  imgurl = fileURL;
+                                  Add_Hospital(imgurl);
+                                });
                               });
                             });
-                          });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(backgroundColor: Colors.green,content: Text('Hospitals is Added Successfully')));
+                          }
+
                         },
                       ),
                     ),

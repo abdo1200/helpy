@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helpy/Auth/Login.dart';
+import 'package:helpy/Hospital/ViewHospital.dart';
 import 'package:helpy/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -92,15 +93,12 @@ class _SearchNameState extends State<SearchName> {
               Container(
                 height: 400,
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('Hospitals').where('name',
-                    isGreaterThanOrEqualTo: name,
-                    isLessThan: name.substring(0, name.length - 1) +
-                        String.fromCharCode(name.codeUnitAt(name.length - 1) + 1),).snapshots(),
+                  stream: FirebaseFirestore.instance.collection('Hospitals').where('name', isGreaterThanOrEqualTo: name)
+                      .where('name', isLessThan: name +'z').snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
                       return Text('Something went wrong');
                     }
-
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Text("Loading");
                     }
@@ -116,7 +114,10 @@ class _SearchNameState extends State<SearchName> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => ViewHospital(document.id)));
+                              },
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -124,7 +125,7 @@ class _SearchNameState extends State<SearchName> {
                                     alignment: Alignment.bottomLeft,
                                     children: [
                                       Ink.image(
-                                        image: AssetImage("assets/img/hospitals/75375.jpg"),
+                                        image: NetworkImage(data['imageurl']),
                                         height: 150,
                                         fit: BoxFit.fitWidth,
                                       ),
@@ -132,20 +133,22 @@ class _SearchNameState extends State<SearchName> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 50, top: 15, right: 50, bottom: 30),
+                                         top: 15, bottom: 30),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text(
                                           '${data['name']}',
+                                          textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: Colors.blueAccent,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 23),
+                                              fontSize: 18),
                                         ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
+                                            if(data['rate']!=null)
                                             for(int i=0;i<data['rate'];i++)
                                               Icon(Icons.star,
                                                   color: Colors.blueAccent, size: 25.0),

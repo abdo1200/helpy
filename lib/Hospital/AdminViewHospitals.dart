@@ -8,12 +8,6 @@ import 'package:helpy/Admin/AdminViewSpecificHospital.dart';
 
 class AdminViewHospitals extends StatelessWidget{
   FirebaseAuth instance = FirebaseAuth.instance;
-  final List<Reviews> Rev = [
-    Reviews(name: "Egyption Hospital" , Reviewws: "Wow"),
-    Reviews(name: "Egyption Hospital" , Reviewws: "Woow"),
-    Reviews(name: "Egyption Hospital", Reviewws: "Wooow" ),
-    Reviews(name: "Egyption Hospital", Reviewws: "Wooooow" ),
-  ];
 
   @override
   Widget build(BuildContext context) {

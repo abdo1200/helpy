@@ -1,45 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:helpy/Auth/Login.dart';
-import 'package:helpy/Reviews/AdminViewReview.dart';
-import 'file:///C:/Users/abdos/AndroidStudioProjects/helpy/lib/chat/chatScreen.dart';
-import 'package:intl/intl.dart';
-import 'choose_day.dart';
 
 import '../main.dart';
 
-class DoctorProfile extends StatefulWidget {
-  String id;
-  DoctorProfile(this.id);
+class DoctorAccount extends StatefulWidget {
   @override
-_DoctorProfileState createState() => _DoctorProfileState();
-  }
-FirebaseAuth instance = FirebaseAuth.instance;
-final userRef = FirebaseFirestore.instance.collection("doctors");
+  _DoctorAccountState createState() => _DoctorAccountState();
+}
 
-
-class _DoctorProfileState extends State<DoctorProfile> {
-
+class _DoctorAccountState extends State<DoctorAccount> {
+  FirebaseAuth instance = FirebaseAuth.instance;
+  final userRef = FirebaseFirestore.instance.collection("doctors");
   CollectionReference documents = FirebaseFirestore.instance.collection('DoctorsReviews');
-
-  String Comment = "null";
-  final _formKey = GlobalKey<FormState>();
-  int Rate = 0;
-  var Y=Colors.yellow;
-  var DefaultColor1 = Colors.white;
-  var DefaultColor2 = Colors.white;
-  var DefaultColor3 = Colors.white;
-  var DefaultColor4 = Colors.white;
-  var DefaultColor5 = Colors.white;
-
-  Future<void> addReview(String id) {
-    // Call the user's CollectionReference to add a new user
-    return documents
-        .add({'comment': Comment, 'rate': Rate,'doctorId' : id,'email':instance.currentUser.email,'date':DateFormat('yyyy-MM-dd').format(DateTime.now()),})
-        .then((value) => print("Review Added Successfully"))
-        .catchError((error) => print("Failed to add Review: $error"));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +49,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
       ),
       body: SingleChildScrollView(
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('users').doc(widget.id).snapshots(),
+          stream: FirebaseFirestore.instance.collection('users').doc(instance.currentUser.email).snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return const Text('loading');
             return Container(
@@ -115,8 +89,8 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         for(int i=0;i<snapshot.data['rate'];i++)
-                                        Icon(Icons.star,
-                                            color: Colors.amberAccent, size: 25.0),
+                                          Icon(Icons.star,
+                                              color: Colors.amberAccent, size: 25.0),
                                       ],
                                     ),
                                   ],
@@ -226,47 +200,6 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                   SizedBox(
                                     height: 3,
                                   ),
-                                  Row(
-                                    children: [
-                                      Container(
-                                          margin: EdgeInsets.only(top: 20),
-                                          child: RaisedButton(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                  BorderRadius.circular(20)),
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 15, horizontal: 25),
-                                              color: Colors.redAccent,
-                                              child: Text(
-                                                'Book',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => ChooseDay(widget.id,snapshot.data['name'])));
-                                              })),
-                                      Container(
-                                          margin: EdgeInsets.only(top: 20,left: 10),
-                                          child: RaisedButton(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                  BorderRadius.circular(20)),
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 17, horizontal: 25),
-                                              color: MainColor,
-                                              child: Icon(Icons.message,size: 20,color: Colors.white,),
-                                              onPressed: () {
-                                                Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => ChatScreen(widget.id,snapshot.data['name'])));
-                                              })),
-                                    ],
-                                  ),
                                 ],
                               ),
                             ),
@@ -282,140 +215,6 @@ class _DoctorProfileState extends State<DoctorProfile> {
                             height: 3,
                             color: MainColor,
                             margin: EdgeInsets.only(bottom: 30),
-                          ),
-                          Text(
-                            'Add Review',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          Form(
-                            key: _formKey,
-                            child: Container(
-                              width: 350,
-                              margin: EdgeInsets.only(top: 20),
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return '*Required Field';
-                                  }
-                                  return null;
-                                },
-                                onChanged: (value) {
-                                  Comment = value;
-                                },
-                                maxLines: null,
-                                keyboardType: TextInputType.multiline,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  focusColor: Colors.blue,
-                                  fillColor: Colors.red,
-                                  hintText: 'Add Your Review',
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
-                            width: 270,
-                            decoration: BoxDecoration(
-                                color: MainColor,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.star, color: DefaultColor1),
-                                  onPressed: () {
-                                    setState(() {
-                                      Rate = 1;
-                                      DefaultColor1 = Y;
-                                      DefaultColor2 = Colors.white;
-                                      DefaultColor3 = Colors.white;
-                                      DefaultColor4 = Colors.white;
-                                      DefaultColor5 = Colors.white;
-                                    });
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.star, color: DefaultColor2),
-                                  onPressed: () {
-                                    setState(() {
-                                      Rate = 2;
-                                      DefaultColor1 = Y;
-                                      DefaultColor2 = Y;
-                                      DefaultColor3 = Colors.white;
-                                      DefaultColor4 = Colors.white;
-                                      DefaultColor5 = Colors.white;
-                                    });
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.star, color: DefaultColor3),
-                                  onPressed: () {
-                                    setState(() {
-                                      Rate = 3;
-                                      DefaultColor1 = Y;
-                                      DefaultColor2 = Y;
-                                      DefaultColor3 = Y;
-                                      DefaultColor4 = Colors.white;
-                                      DefaultColor5 = Colors.white;
-                                    });
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.star, color: DefaultColor4),
-                                  onPressed: () {
-                                    setState(() {
-                                      Rate = 4;
-                                      DefaultColor1 = Y;
-                                      DefaultColor2 = Y;
-                                      DefaultColor3 = Y;
-                                      DefaultColor4 = Y;
-                                      DefaultColor5 = Colors.white;
-                                    });
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.star, color: DefaultColor5),
-                                  onPressed: () {
-                                    setState(() {
-                                      Rate = 5;
-                                      DefaultColor1 = Y;
-                                      DefaultColor2 = Y;
-                                      DefaultColor3 = Y;
-                                      DefaultColor4 = Y;
-                                      DefaultColor5 = Y;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.all(20),
-                            child: RaisedButton(
-                                padding:
-                                EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                child: Text("Submit",
-                                    style: TextStyle(color: Colors.white, fontSize: 20)),
-                                color: MainColor,
-                                onPressed: (){
-                                  if (Comment == null||Rate ==0) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            backgroundColor: Colors.red,
-                                            content: Text(
-                                                '*Required Field',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18.0))));
-                                  }else{
-                                    addReview(widget.id);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(backgroundColor: Colors.green,content: Text('Review is Added Successfully')));
-                                    Comment =null;
-                                    Rate=0;
-                                  }
-                                }),
                           ),
                         ],
                       ),
@@ -457,7 +256,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                             SizedBox(
                               height: 200, // card height
                               child: StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance.collection('DoctorsReviews').where('doctorId',isEqualTo: widget.id).snapshots(),
+                                  stream: FirebaseFirestore.instance.collection('DoctorsReviews').where('doctorId',isEqualTo: instance.currentUser.email).snapshots(),
                                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                     if (snapshot.hasError) {
                                       return Text('Something went wrong');
@@ -500,9 +299,9 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                                                   .start,
                                                               children: [
                                                                 for(int j=0;j<snapshot.data.docs[i]['rate'];j++)
-                                                                Icon(Icons.star,
-                                                                    color: Colors.amberAccent,
-                                                                    size: 25.0),
+                                                                  Icon(Icons.star,
+                                                                      color: Colors.amberAccent,
+                                                                      size: 25.0),
                                                               ],
                                                             ),
                                                           ),
@@ -574,7 +373,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
             );
           },
         ),
-    ),
+      ),
     );
   }
 }

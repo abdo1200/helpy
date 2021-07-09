@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:helpy/Auth/ChooseRole.dart';
 import 'package:helpy/Auth/register.dart';
+import 'package:helpy/Home/AdminHome.dart';
+import 'package:helpy/Home/DoctorHome.dart';
+import 'package:helpy/Home/MemberHome.dart';
 import 'package:helpy/Home/home.dart';
 import 'package:helpy/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,17 +20,29 @@ class _LoginState extends State<Login> {
   String _email, _password;
   final _formKey = GlobalKey<FormState>();
 
-  var loginkey = GlobalKey<ScaffoldState>();
   FirebaseAuth instance = FirebaseAuth.instance;
 
   Future SendRule(String email) async{
     await FirebaseFirestore.instance.collection('users').doc(email).get().then((value){
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Home(value['rule'])));
+      if(email=='admin@admin.com'){
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AdminHome()));
+      }else{
+        if(value['rule']=='member'){
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MemberHome()));
+        }else if(value['rule']=='doctor'){
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DoctorHome()));
+        }
+      }
     });
-
   }
 
   @override
@@ -59,6 +74,7 @@ class _LoginState extends State<Login> {
                         hintText: 'Enter your username',
                         labelText: 'UserName'
                     ),
+
                     onChanged: (value) {
                       setState(() {
                         this._email = value;
@@ -75,6 +91,13 @@ class _LoginState extends State<Login> {
                         this._password = value;
                       });
                     },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '*Required Field';
+                      }
+                      return null;
+                    },
+                    obscureText: true,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         focusColor: Colors.blue,
@@ -118,21 +141,40 @@ class _LoginState extends State<Login> {
                       try {
                         await instance.signInWithEmailAndPassword(email: _email, password: _password);
                         SendRule(_email);
-
-                      } on FirebaseAuthException catch (e) {
+                      }on FirebaseAuthException catch (e) {
+                        if (_formKey.currentState.validate()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                      'Enter Valid Email & Password',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.0))));
+                        }
+                        if (e.code == 'invalid-email') {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text('invalid-email',
+                                style: TextStyle(color: Colors.white,fontSize: 18.0)),
+                          ));
+                        }
                         if (e.code == 'user-not-found') {
-//                            loginkey.currentState.showSnackBar(SnackBar(
-//                              content: Text('user not found'),
-//                            ));
-                          print("user not found");
-                        } else if (e.code == 'wrong-password') {
-//                            loginkey.currentState.showSnackBar(SnackBar(
-//                              content: Text('wrong password'),
-//                            ));
-                        } else if (e.code == 'invalid-email') {
-//                            loginkey.currentState.showSnackBar(SnackBar(
-//                              content: Text('invalid email'),
-//                            ));
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text('user-not-found',
+                                style: TextStyle(color: Colors.white,fontSize: 18.0)),
+                          ));
+                        }
+                        if (e.code == 'wrong-password') {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text('wrong-password',
+                                style: TextStyle(color: Colors.white,fontSize: 18.0)),
+                          ));
                         }
                       }
                     },

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:helpy/Auth/Login.dart';
+import 'package:helpy/Doctor/Doctor_Account.dart';
+import 'package:helpy/Doctor/chatRoom.dart';
 import 'package:helpy/Doctor/doctor_profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:helpy/Doctor/view_reservations.dart';
 import '../main.dart';
 
 class DoctorHome extends StatefulWidget {
@@ -11,6 +15,7 @@ class DoctorHome extends StatefulWidget {
 
 class _DoctorHomeState extends State<DoctorHome> {
   FirebaseAuth instance = FirebaseAuth.instance;
+  String img;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,17 +40,24 @@ class _DoctorHomeState extends State<DoctorHome> {
                             Container(
                               child: Row(
                                 children: <Widget>[
-                                  Container(
-                                    width: 50,
-                                    height: 50,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Image(
-                                        image: AssetImage('assets/img/me.jpeg'),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
+                                  StreamBuilder(
+                                    stream: FirebaseFirestore.instance.collection('users').doc(instance.currentUser.email).snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) return const Text('loading');
+                                      return Container(
+                                        width: 50,
+                                        height: 50,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(50),
+                                          child: Image(
+                                            image: NetworkImage(snapshot.data['imageurl']),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
+
                                   IconButton(
                                     icon: Icon(Icons.exit_to_app),
                                     color: Colors.white,
@@ -67,7 +79,7 @@ class _DoctorHomeState extends State<DoctorHome> {
                             ButtonContainer(
                               buttonText: "Messegs",
                               buttonIcon: Icons.chat,
-                              //widgetName: AddHospital(),
+                              widgetName: ChatRoom(),
                             ),
                             SizedBox(
                               height: 45,
@@ -75,7 +87,7 @@ class _DoctorHomeState extends State<DoctorHome> {
                             ButtonContainer(
                               buttonText: "Reservations",
                               buttonIcon: Icons.shopping_bag_rounded,
-                              //widgetName: AdminViewHospitals(),
+                              widgetName: viewReservations(instance.currentUser.email),
                             ),
                             SizedBox(
                               height: 45,
@@ -83,7 +95,7 @@ class _DoctorHomeState extends State<DoctorHome> {
                             ButtonContainer(
                               buttonText: "Profile",
                               buttonIcon: Icons.person,
-                              widgetName: DoctorProfile(instance.currentUser.email),
+                              widgetName: DoctorAccount(),
                             ),
                             SizedBox(
                               height: 45,

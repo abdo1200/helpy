@@ -78,15 +78,11 @@ class _RegisterState extends State<Register> {
                     margin: EdgeInsets.only(top: 20),
                     padding: EdgeInsets.only(left: 30,right: 30),
                     child: TextFormField(
-                      validator: (name){
-                        Pattern pattern =
-                            r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$';
-                        RegExp regex = new RegExp(pattern);
-                        if (!regex.hasMatch(name))
-                          return 'Invalid username';
-                        else
-                          return null;
-
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '*Required Field';
+                        }
+                        return null;
                       },
                       onChanged: (value) {
                         setState(() {
@@ -135,14 +131,11 @@ class _RegisterState extends State<Register> {
                       },
                       keyboardType: TextInputType.text ,
                       obscureText: true,
-                      validator: (password){
-                        Pattern pattern =
-                            r'^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$';
-                        RegExp regex = new RegExp(pattern);
-                        if (!regex.hasMatch(password))
-                          return 'Invalid password';
-                        else
-                          return null;
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '*Required Field';
+                        }
+                        return null;
                       },
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -158,6 +151,12 @@ class _RegisterState extends State<Register> {
                     margin: EdgeInsets.only(top: 20),
                     padding: EdgeInsets.only(left: 30,right: 30),
                     child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '*Required Field';
+                        }
+                        return null;
+                      },
                       onChanged: (value) {
                         setState(() {
                           this._phone=value;
@@ -178,7 +177,13 @@ class _RegisterState extends State<Register> {
                     margin: EdgeInsets.only(top: 20),
                     padding: EdgeInsets.only(left: 30,right: 30),
                     child: TextFormField(
-                      onChanged: (value) {
+
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '*Required Field';
+                        }
+                        return null;
+                      },                      onChanged: (value) {
                         setState(() {
                           this._gender=value;
                         });
@@ -276,6 +281,12 @@ class _RegisterState extends State<Register> {
                     margin: EdgeInsets.only(top: 20),
                     padding: EdgeInsets.only(left: 30,right: 30),
                     child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '*Required Field';
+                        }
+                        return null;
+                      },
                       onChanged: (value) {
                         setState(() {
                           this._birthday=value;
@@ -301,8 +312,16 @@ class _RegisterState extends State<Register> {
                       ),
                       color: MainColor,
                       onPressed: () async{
-                        if(_formKey.currentState.validate()){
-                          _formKey.currentState.save();
+                        if (_name == null || _email == null|| _phone ==null|| _address == null|| _gender ==null||
+                            _birthday ==null || _password==null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                      '*Required Field',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.0))));
                         }
                         Reference storageReference = FirebaseStorage.instance.ref().child(basename(_userImageFile.path));
                         UploadTask uploadTask = storageReference.putFile(_userImageFile);

@@ -18,9 +18,9 @@ class ViewHospital extends StatefulWidget {
 class _ViewHospitalState extends State<ViewHospital> {
   FirebaseAuth instance = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  CollectionReference documents =
-      FirebaseFirestore.instance.collection('Reviews');
-  String Comment = "null";
+  CollectionReference documents = FirebaseFirestore.instance.collection('Reviews');
+  String Comment;
+  final _formKey = GlobalKey<FormState>();
   int Rate = 0;
   var Y=Colors.yellow;
   var DefaultColor1 = Colors.white;
@@ -68,8 +68,7 @@ class _ViewHospitalState extends State<ViewHospital> {
                             color: Colors.white,
                             icon: Icon(Icons.arrow_back),
                             onPressed: () {
-                              Navigator.pushReplacement(context,
-                                  MaterialPageRoute(builder: (context) => UserHome('member')));
+                              Navigator.pop(context);
                             },
                           ),
                         ),
@@ -104,10 +103,11 @@ class _ViewHospitalState extends State<ViewHospital> {
                   ),
                   //hospital name
                   Container(
-                    alignment: Alignment.centerRight,
-                    margin: EdgeInsets.only(top: 15,right: 25),
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(top: 15),
                     child: Text(
                       snapshot.data['name'],
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 27,
                         fontWeight: FontWeight.bold,
@@ -240,7 +240,6 @@ class _ViewHospitalState extends State<ViewHospital> {
                               itemBuilder: (BuildContext context, int index) => new FractionallySizedBox(
                                 child: Container(
                                     margin: EdgeInsets.only(bottom: 20),
-                                    padding: EdgeInsets.symmetric(vertical: 5,horizontal: 5),
                                     decoration: BoxDecoration(
                                         border: Border.all(color: MainColor,width: 1,style: BorderStyle.solid),
                                         borderRadius: BorderRadius.circular(40),
@@ -285,20 +284,29 @@ class _ViewHospitalState extends State<ViewHospital> {
                           'Add Review',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                        Container(
-                          width: 350,
-                          margin: EdgeInsets.only(top: 20),
-                          child: TextField(
-                            onChanged: (value) {
-                              Comment = value;
-                            },
-                            maxLines: null,
-                            keyboardType: TextInputType.multiline,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              focusColor: Colors.blue,
-                              fillColor: Colors.red,
-                              hintText: 'Add Your Review',
+                        Form(
+                          key: _formKey,
+                          child: Container(
+                            width: 350,
+                            margin: EdgeInsets.only(top: 20),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return '*Required Field';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                Comment = value;
+                              },
+                              maxLines: null,
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                focusColor: Colors.blue,
+                                fillColor: Colors.red,
+                                hintText: 'Add Your Review',
+                              ),
                             ),
                           ),
                         ),
@@ -388,7 +396,23 @@ class _ViewHospitalState extends State<ViewHospital> {
                                   style: TextStyle(color: Colors.white, fontSize: 20)),
                               color: MainColor,
                               onPressed: (){
-                                addReview(widget.id);
+                                if (Comment == null||Rate ==0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          backgroundColor: Colors.red,
+                                          content: Text(
+                                              '*Required Field',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18.0))));
+                                }else{
+                                  addReview(widget.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(backgroundColor: Colors.green,content: Text('Review is Added Successfully')));
+                                  Comment=null;
+                                  Rate=0;
+
+                                }
                               }),
                         ),
 
@@ -448,7 +472,7 @@ class _ViewHospitalState extends State<ViewHospital> {
                                             children: snapshot.data.docs.map((DocumentSnapshot document) {
                                               Map<String, dynamic> data = document.data();
                                               return StreamBuilder(
-                                                stream: FirebaseFirestore.instance.collection('users').doc('${data['email']}').snapshots(),
+                                                stream: FirebaseFirestore.instance.collection('users').doc(data['email']).snapshots(),
                                                 builder: (context, snapshot) {
                                                   if (!snapshot.hasData) return const Text('loading');
                                                   return Container(
@@ -474,7 +498,8 @@ class _ViewHospitalState extends State<ViewHospital> {
                                                                       image: new DecorationImage(
                                                                         fit: BoxFit.fill,
                                                                         image: NetworkImage(snapshot.data['imageurl'])
-                                                                      ))),
+                                                                      )
+                                                                  )),
                                                               Container(
                                                                 margin: EdgeInsets.only(left: 20),
                                                                 child: Column(
